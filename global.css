@@ -1,0 +1,51 @@
+/* --- global.css --- */
+/* ARQUIVO MESTRE: Reset & Variáveis para TODO o sistema (Index, Admin, Checkout, Status) */
+
+:root {
+    /* --- Cores da Marca (Vindas do style.css original) --- */
+    --primary-color: #ff3b30; /* Vermelho vibrante */
+    --promo-bg: #ff0000;      /* Vermelho da barra de promoção */
+    
+    /* --- Cores Funcionais (Vindas do Admin/Checkout) --- */
+    --whatsapp-green: #128C7E; /* Verde oficial do WhatsApp */
+    --success-green: #28a745;  /* Verde de Sucesso/Concluído */
+    --error-red: #d32f2f;      /* Vermelho de Erro/Cancelar */
+    
+    /* --- Status de Pedidos (Kanban) --- */
+    --status-pending: #ff9800; /* Laranja */
+    --status-prep: #2196f3;    /* Azul */
+    --status-delivery: #128C7E;/* Verde */
+
+    /* --- Tons Neutros --- */
+    --text-dark: #333;
+    --text-light: #777;
+    --bg-light: #f4f4f4;
+    --white: #fff;
+    --shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Reset Global */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Poppins', sans-serif; 
+    outline: none; /* Remove borda azul de clique em inputs */
+}
+
+body { 
+    background-color: var(--bg-light); 
+    color: var(--text-dark);
+    /* Padding bottom removido daqui para não quebrar o layout do Admin.
+       Cada página específica adiciona seu padding se precisar. */
+}
+
+/* Utilitários comuns */
+.material-icons {
+    vertical-align: middle;
+}
+
+/* Utilitário para esconder elementos visualmente mas manter acessibilidade */
+.hidden {
+    display: none !important;
+}

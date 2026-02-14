@@ -1,0 +1,138 @@
+/* --- admin-cards.css --- */
+/* Estilos dos Cartões de Pedido e Colunas de Motoboy */
+
+/* O CARD DO PEDIDO */
+.order-card-admin {
+    background: #fff; border: 1px solid #ddd; border-radius: 6px;
+    margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; overflow: hidden;
+    position: relative; transition: all 0.2s ease;
+}
+
+/* Header do Card (ID e Tempo) */
+.k-header {
+    padding: 8px 10px; background: #f8f9fa; border-bottom: 1px solid #eee;
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+}
+.k-header-left { 
+    display: flex; align-items: center; gap: 6px; 
+    font-size: 0.75rem; color: #555; white-space: nowrap; overflow: hidden;
+}
+.k-header-left strong { color: #000; font-weight: 700; font-size: 0.85rem; }
+
+/* Corpo do Card */
+.k-body { padding: 8px 10px 0 10px; cursor: pointer; background: #fff; }
+
+.k-item-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    font-size: 0.8rem; color: #444; margin-bottom: 4px; 
+    border-bottom: 1px dashed #f9f9f9; padding-bottom: 2px;
+}
+.k-qty { font-weight: 700; color: #000; margin-right: 4px; }
+
+/* Total e Expandir */
+.k-total-display {
+    text-align: right; font-size: 0.85rem; font-weight: 800; color: var(--success-green);
+    margin-top: 2px; padding-top: 2px; border-top: 1px solid #f5f5f5; line-height: 1.2;
+}
+.k-expand-trigger {
+    text-align: center; background: #fff; border: none; padding: 0; cursor: pointer;
+    height: 14px; line-height: 14px; width: 100%;
+}
+.k-expand-trigger i { font-size: 1.1rem; color: #e0e0e0; transition: transform 0.3s; }
+.order-card-admin.expanded .k-expand-trigger i { transform: rotate(180deg); color: #333; }
+
+/* Detalhes Ocultos (Endereço, etc) */
+.k-details-hidden {
+    display: none; background: #f8f9fa; padding: 10px; 
+    border-top: 1px dashed #e0e0e0; border-bottom: 1px solid #e0e0e0;
+}
+.order-card-admin.expanded .k-details-hidden { display: block; animation: fadeIn 0.2s; }
+
+.k-details-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.75rem; color: #333; white-space: nowrap; margin-bottom: 4px;
+}
+.k-address-row { display: flex; align-items: flex-start; gap: 4px; font-size: 0.75rem; color: #555; }
+.k-address-row i { font-size: 0.85rem; color: var(--error-red); }
+
+/* Ações (Botões no rodapé do card) */
+.k-actions-footer { padding: 0 10px 10px 10px; background: #fff; }
+.k-actions-footer button {
+    padding: 4px !important; font-size: 0.8rem !important; margin-top: 5px !important;
+}
+
+/* COLUNAS DE MOTOBOY (FLEET) */
+.kanban-col:last-child {
+    background: transparent !important; padding: 0 !important;
+    box-shadow: none !important; min-width: auto !important; width: auto !important;
+    display: flex; flex-direction: row; gap: 15px;
+}
+#list-delivery { display: flex; gap: 15px; height: 100%; }
+
+.driver-column {
+    min-width: 390px !important; width: 390px !important; flex-shrink: 0;
+    background: #fff; border: 1px solid #ddd; border-radius: 8px;
+    display: flex; flex-direction: column; height: 100% !important; max-height: 100% !important;
+    padding-bottom: 0; overflow: hidden;
+}
+.driver-col-header {
+    background: #f8f9fa; padding: 5px 8px; border-bottom: 1px solid #eee;
+}
+.driver-name { font-weight: 800; font-size: 0.9rem; display: flex; justify-content: space-between; }
+.driver-drop-zone { flex: 1; padding: 8px; overflow-y: auto; background: #fafafa; min-height: 0; }
+.driver-drop-zone.drag-over { background: #e3f2fd; border: 2px dashed #2196f3; }
+
+/* Estados do Motoboy */
+.driver-column.active { border: 2px solid #2196f3; box-shadow: 0 4px 10px rgba(33, 150, 243, 0.2); }
+.status-delivering { 
+    background: #fff3cd; color: #856404; font-size: 0.75rem; padding: 4px; 
+    text-align: center; font-weight: bold; display: none; 
+}
+.driver-column.active .status-delivering { display: block; }
+.driver-badge {
+    display: inline-flex; align-items: center; gap: 4px; background: #e3f2fd; color: #1565c0;
+    padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-top: 5px;
+}
+
+
+
+/* --- ADICIONE ISTO NO FINAL DO admin-cards.css --- */
+.cancel-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95); /* Fundo branco quase sólido */
+    display: none; /* Começa invisível */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    text-align: center;
+    padding: 10px;
+}
+
+.cancel-popup-overlay h4 {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.cancel-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-abort-cancel, .btn-confirm-cancel {
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.btn-abort-cancel { background: #eee; color: #333; }
+.btn-confirm-cancel { background: #ffebee; color: #d32f2f; border: 1px solid #d32f2f; }

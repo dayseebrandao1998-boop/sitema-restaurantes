@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Painel Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="global.css">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--bg-light); }
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .login-logo { width: 80px; height: 80px; background: var(--bg-light); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary-color); font-size: 1.5rem; }
+        .login-btn { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 20px; font-size: 1rem; }
+        .switch-link { margin-top: 15px; font-size: 0.85rem; color: var(--text-light); cursor: pointer; text-decoration: underline; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-logo">DELIVERY</div>
+        <h2 style="margin-bottom: 5px;">Bem-vindo</h2>
+        <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Gerencie seu delivery em um só lugar.</p>
+        
+        <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Slug da Loja (Link)</label>
+            <input type="text" id="loginSlug" placeholder="ex: hamburgueria1" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+        <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Senha</label>
+            <input type="password" id="loginPass" placeholder="******" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()">ENTRAR</button>
+        <div class="switch-link" onclick="handleRegisterMock()">Não tem conta? Criar loja teste</div>
+    </div>
+
+  
+<script src="utils.js"></script>
+<script src="core.js"></script>
+<script src="store-client.js"></script>
+<script src="admin-panel.js"></script>
+<script src="admin-kanban.js"></script>
+<script src="checkout.js"></script>
+<script src="status.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+/* --- checkout.css --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+:root {
+    --primary-color: #ff3b30;
+    --text-dark: #333;
+    --text-light: #777;
+    --bg-light: #f4f4f4;
+    --white: #fff;
+    --shadow: 0 2px 10px rgba(0,0,0,0.05);
+    --whatsapp-green: #128C7E; 
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; outline: none; }
+
+body { 
+    background-color: var(--bg-light); 
+    padding: 20px;
+    padding-bottom: 100px;
+    color: var(--text-dark);
+}
+
+.checkout-container { max-width: 600px; margin: 0 auto; }
+
+.checkout-header {
+    display: flex; align-items: center; margin-bottom: 25px; background: transparent;
+}
+.back-btn {
+    background: none; border: none; font-size: 1.5rem; color: var(--text-dark);
+    cursor: pointer; margin-right: 15px; display: flex; align-items: center;
+    padding: 5px; border-radius: 50%; transition: background 0.2s;
+}
+.back-btn:hover { background-color: rgba(0,0,0,0.05); }
+.checkout-header h2 { font-size: 1.3rem; font-weight: 700; }
+
+.checkout-section {
+    background: var(--white); padding: 20px; border-radius: 12px;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.section-title {
+    font-size: 1rem; font-weight: 700; color: var(--text-dark);
+    margin-bottom: 15px; display: flex; align-items: center;
+    gap: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;
+}
+.section-title i { color: var(--primary-color); }
+
+.checkout-item {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 15px; border-bottom: 1px dashed #eee; margin-bottom: 15px;
+}
+.checkout-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.item-details h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+.item-details p { font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+.item-right { text-align: right; min-width: 80px; }
+.item-price { font-weight: 700; font-size: 0.95rem; color: var(--text-dark); }
+.remove-btn {
+    color: #ff0000; font-size: 0.75rem; background: none; border: none;
+    cursor: pointer; margin-top: 5px; text-decoration: underline;
+}
+
+.form-group { margin-bottom: 15px; }
+.form-group label {
+    display: block; font-size: 0.85rem; color: var(--text-light);
+    margin-bottom: 8px; font-weight: 500;
+}
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 12px 15px; border: 1px solid #ddd; 
+    border-radius: 8px; font-size: 0.95rem; background-color: #fafafa;
+    transition: border-color 0.2s;
+}
+.form-group input:focus { border-color: var(--primary-color); background-color: #fff; }
+
+.payment-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.payment-option {
+    flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+    text-align: center; cursor: pointer; font-size: 0.9rem; font-weight: 500;
+    transition: all 0.2s; background: #fafafa; min-width: 80px;
+}
+.payment-option.selected {
+    border-color: var(--primary-color); background: #fff5f5;
+    color: var(--primary-color); font-weight: 700;
+    box-shadow: 0 2px 5px rgba(255, 59, 48, 0.15);
+}
+
+.summary-row {
+    display: flex; justify-content: space-between; margin-bottom: 8px;
+    font-size: 0.9rem; color: var(--text-light);
+}
+.summary-row.total {
+    font-size: 1.2rem; font-weight: 700; color: var(--text-dark);
+    margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;
+}
+
+/* --- BOTÃO VERDE CORRIGIDO --- */
+.confirm-order-btn {
+    width: 100%;
+    background-color: var(--whatsapp-green);
+    color: white;
+    padding: 15px; /* Padding uniforme */
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(18, 140, 126, 0.3);
+    transition: all 0.2s;
+    
+    /* Flexbox perfeito */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px; /* Espaço entre o ícone e o texto */
+    
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.confirm-order-btn:hover {
+    background-color: #0e6b5e;
+    transform: translateY(-2px);
+}
+
+.confirm-order-btn:active {
+    transform: scale(0.98);
+}
+
+/* Estilo do SVG dentro do botão */
+.confirm-order-btn svg {
+    fill: currentColor;
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.empty-cart-msg {
+    text-align: center; color: var(--text-light); padding: 20px;
+}
+
+
+.payment-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.payment-option {
+    border: 1px solid #ddd; /* Borda padrão */
+    border-radius: 8px;
+    padding: 15px;
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* O Javascript vai adicionar estilos inline, mas você pode ter uma classe também */
+.payment-option.selected {
+    border-color: #0f6e63;
+    background-color: #e0f2f1;
+    color: #0f6e63;
+    font-weight: bold;
+}

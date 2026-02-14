@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhar Pedido</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="status.css">
+</head>
+<body id="statusPage">
+
+    <div class="status-container">
+        <div class="status-header">
+            <button onclick="window.location.href='index.html'" class="back-home-btn">
+                <i class="material-icons">home</i> Voltar ao Início
+            </button>
+            <h1>Status do Pedido</h1>
+            <p id="orderIdDisplay">#---</p>
+        </div>
+
+        <div class="status-timeline">
+            <div class="step" id="step-pending">
+                <div class="step-icon"><i class="material-icons">receipt_long</i></div>
+                <div class="step-info">
+                    <h3>Pedido Recebido</h3>
+                    <p>Aguardando confirmação.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step-preparing">
+                <div class="step-icon"><i class="material-icons">soup_kitchen</i></div>
+                <div class="step-info">
+                    <h3>Em Preparo</h3>
+                    <p>A cozinha está preparando.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step-ready">
+                <div class="step-icon"><i class="material-icons">room_service</i></div>
+                <div class="step-info">
+                    <h3>Pedido Pronto</h3>
+                    <p>Aguardando entregador.</p>
+                </div>
+            </div>
+
+            <div class="step" id="step-delivery">
+                <div class="step-icon"><i class="material-icons">two_wheeler</i></div>
+                <div class="step-info">
+                    <h3>Saiu para Entrega</h3>
+                    <p>O entregador está a caminho!</p>
+                </div>
+            </div>
+
+            <div class="step" id="step-done">
+                <div class="step-icon"><i class="material-icons">check_circle</i></div>
+                <div class="step-info">
+                    <h3>Pedido Entregue</h3>
+                    <p>Bom apetite!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="emailCaptureArea" style="margin: 20px auto; max-width: 500px; display:none;">
+        </div>
+
+        <div class="order-summary-box">
+            <h3>Resumo</h3>
+            <div id="statusOrderItems">Carregando...</div>
+            <div class="total-row">
+                <span>Total</span>
+                <span id="statusTotalVal">R$ 0,00</span>
+            </div>
+        </div>
+    </div>
+
+  
+<script src="utils.js"></script>
+<script src="core.js"></script>
+<script src="store-client.js"></script>
+<script src="admin-panel.js"></script>
+<script src="admin-kanban.js"></script>
+<script src="checkout.js"></script>
+<script src="status.js"></script>
+
+</body>
+</html>

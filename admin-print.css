@@ -1,0 +1,34 @@
+/* --- admin-print.css --- */
+/* Estilos para Impressão Térmica (58mm/80mm) */
+
+/* Esconde a área de impressão na tela normal */
+#printArea { display: none; }
+
+@media print {
+    /* Esconde todo o painel admin */
+    body * { visibility: hidden; }
+    
+    /* Mostra apenas a nota fiscal */
+    #printArea, #printArea * { visibility: visible; }
+    
+    #printArea {
+        display: block !important;
+        position: absolute; left: 0; top: 0;
+        width: 100%; margin: 0; padding: 0;
+        background: white; z-index: 9999;
+    }
+    
+    /* Ajustes para papel térmico */
+    .print-receipt {
+        font-family: 'Courier New', Courier, monospace;
+        color: #000;
+        width: 100%;
+        max-width: 80mm; /* Largura padrão */
+        padding: 5px;
+    }
+    
+    .print-header h2 { font-size: 14px; text-align: center; }
+    .print-divider { border-top: 1px dashed #000; margin: 10px 0; }
+    .print-item { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+    .print-total { font-weight: bold; font-size: 14px; text-align: right; margin-top: 10px; }
+}

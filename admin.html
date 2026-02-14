@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - SaaS</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin-cards.css">
+    <link rel="stylesheet" href="admin-print.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body id="adminPage">
+
+    <nav class="admin-nav">
+        <div class="admin-logo">
+            <i class="material-icons">storefront</i>
+            <span id="adminStoreNameDisplay">Carregando...</span>
+            <a href="#" onclick="openMyStore()" class="btn-view-store">
+                Ver Loja <i class="material-icons" style="font-size:0.9rem;">open_in_new</i>
+            </a>
+        </div>
+        
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchTab('orders')">
+                <i class="material-icons">list_alt</i> Pedidos
+            </button>
+            <button class="nav-btn" onclick="switchTab('deliveries'); loadDeliveriesTab()">
+                <i class="material-icons">sports_motorsports</i> Entregas
+            </button>
+            <button class="nav-btn" onclick="switchTab('history'); loadAdminHistory()">
+                <i class="material-icons">show_chart</i> Histórico
+            </button>
+            <button class="nav-btn" onclick="switchTab('menu')">
+                <i class="material-icons">restaurant_menu</i> Cardápio
+            </button>
+            <button class="nav-btn" onclick="switchTab('settings')">
+                <i class="material-icons">settings</i> Ajustes
+            </button>
+            <button class="nav-btn logout" onclick="doLogout()">
+                <i class="material-icons">logout</i> Sair
+            </button>
+        </div>
+    </nav>
+
+    <div class="admin-content">
+
+        <div id="tab-orders" class="active-section">
+            <div class="kanban-board">
+                <div class="kanban-col">
+                    <div class="col-header pending">PENDENTES</div>
+                    <div class="order-list" id="list-pending"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="col-header preparing">PREPARANDO</div>
+                    <div class="order-list" id="list-preparing"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="col-header ready">PRONTOS (Aguardando)</div>
+                    <div class="order-list" id="list-ready"></div>
+                </div>
+                <div class="kanban-col" style="background:transparent; padding:0; box-shadow:none;">
+                    <div id="list-delivery" style="display:flex; gap:15px; height:100%;">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-deliveries" class="hidden-section">
+            <div class="section-header">
+                <h2>Controle de Entregas (Hoje)</h2>
+                <button class="add-new-btn" onclick="openDriverModal()">
+                    <i class="material-icons">person_add</i> Gerenciar Motoboys
+                </button>
+            </div>
+            <div id="deliveries-board" style="display:flex; gap:15px; overflow-x:auto; padding-bottom:20px;">
+                </div>
+        </div>
+
+        <div id="tab-history" class="hidden-section">
+            <div class="section-header">
+                <h2>Histórico de Vendas</h2>
+                <div>
+                    <button class="filter-btn active" onclick="filterHistory(7, this)">7 Dias</button>
+                    <button class="filter-btn" onclick="filterHistory(30, this)">30 Dias</button>
+                    <button class="filter-btn" onclick="exportToCSV()" style="margin-left:10px; border-color:#28a745; color:#28a745;">
+                        <i class="material-icons" style="font-size:1rem;">download</i> Exportar CSV
+                    </button>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:20px;">
+                <div style="background:white; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                    <div style="color:#777; font-size:0.9rem;">Faturamento (Período)</div>
+                    <div style="font-size:1.5rem; font-weight:800; color:#28a745;" id="histTotalRevenue">R$ 0,00</div>
+                </div>
+                <div style="background:white; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                    <div style="color:#777; font-size:0.9rem;">Total de Pedidos</div>
+                    <div style="font-size:1.5rem; font-weight:800; color:#333;" id="histTotalOrders">0</div>
+                </div>
+                <div style="background:white; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                    <div style="color:#777; font-size:0.9rem;">Ticket Médio</div>
+                    <div style="font-size:1.5rem; font-weight:800; color:#007bff;" id="histTicket">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:15px; margin-bottom:20px;">
+                <div style="background:white; padding:15px; border-radius:8px; height:250px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <div style="background:white; padding:10px; border-radius:8px; flex:1;">
+                        <canvas id="peakDayChart"></canvas>
+                    </div>
+                    <div style="background:white; padding:10px; border-radius:8px; flex:1;">
+                        <canvas id="peakHourChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead style="background: #f8f9fa; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 10px; text-align: left;">Data</th>
+                            <th style="padding: 10px; text-align: left;">Hora</th>
+                            <th style="padding: 10px; text-align: left;">Cliente</th>
+                            <th style="padding: 10px; text-align: left;">Tel</th>
+                            <th style="padding: 10px; text-align: left;">Email</th>
+                            <th style="padding: 10px; text-align: left;">Endereço</th>
+                            <th style="padding: 10px; text-align: center;">Status</th>
+                            <th style="padding: 10px; text-align: right;">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-menu" class="hidden-section">
+            <div class="section-header">
+                <h2>Gerenciar Cardápio</h2>
+                <div style="display:flex; gap:10px;">
+                    <button class="add-new-btn" style="background:#007bff;" onclick="addCategoryPrompt()">
+                        <i class="material-icons">folder</i> Nova Categoria
+                    </button>
+                    <button class="add-new-btn" onclick="openAddProductModal()">
+                        <i class="material-icons">add</i> Novo Produto
+                    </button>
+                </div>
+            </div>
+            <div id="adminMenuList" class="admin-menu-list">
+                </div>
+        </div>
+
+        <div id="tab-settings" class="hidden-section">
+            <div id="settingsViewMode" style="max-width:600px; margin:0 auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img id="viewLogoPreview" src="" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #eee;">
+                    <h2 id="viewStoreName" style="margin-top:10px;">Carregando...</h2>
+                    <p id="viewStoreAddress" style="color:#777;"></p>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:30px;">
+                    <div style="background:#f8f9fa; padding:15px; border-radius:8px; text-align:center;">
+                        <small>Taxa de Entrega</small>
+                        <div id="viewFee" style="font-weight:bold; font-size:1.1rem; color:#333;">-</div>
+                    </div>
+                    <div style="background:#f8f9fa; padding:15px; border-radius:8px; text-align:center;">
+                        <small>Pixel FB</small>
+                        <div id="viewPixel" style="font-weight:bold; font-size:1.1rem; color:#333;">-</div>
+                    </div>
+                </div>
+                <button onclick="enableSettingsEdit()" style="width:100%; padding:15px; background:#333; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    EDITAR INFORMAÇÕES
+                </button>
+            </div>
+
+            <div id="settingsFormMode" style="display:none; max-width:800px; margin:0 auto;">
+                <div class="section-header">
+                    <h2>Configurações da Loja</h2>
+                </div>
+                <div style="background:white; padding:20px; border-radius:12px; margin-bottom:20px;">
+                    <h3>Dados Básicos</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div class="form-group">
+                            <label>Nome da Loja</label>
+                            <input type="text" id="confName">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Pixel do Facebook (ID)</label>
+                            <input type="text" id="confPixel" placeholder="Ex: 123456789">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço Completo</label>
+                        <input type="text" id="confAddress" placeholder="Rua, Número, Bairro, Cidade">
+                    </div>
+                    <div class="form-group">
+                       <label>Telefone de Contato (Exibido para o cliente)</label>
+                      <input type="text" id="confOwnerPhone" placeholder="(00) 00000-0000" onkeyup="handlePhoneMask(event)">
+                    </div>
+
+                    
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+                        <div class="form-group">
+                            <label>Logo da Loja</label>
+                            <input type="file" id="confLogoInput" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>Banner de Fundo</label>
+                            <input type="file" id="confBannerInput" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:10px;">
+                        <label>Estilo do Topo (Header)</label>
+                        <select id="confLogoAlign">
+                            <option value="left">Padrão (Logo Esquerda, Texto Direita)</option>
+                            <option value="center">Centralizado (Logo Grande no Meio)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="background:white; padding:20px; border-radius:12px; margin-bottom:20px;">
+                    <h3>Entrega & Taxas</h3>
+                    <div class="form-group">
+                        <label>Tipo de Taxa</label>
+                        <select id="confFeeType" onchange="toggleFeeInputs()">
+                            <option value="fixed">Valor Fixo</option>
+                            <option value="neighborhood">Por Bairro</option>
+                        </select>
+                    </div>
+
+                    <div id="feeFixedGroup">
+                        <div class="form-group">
+                            <label>Valor da Entrega (R$)</label>
+                            <input type="number" id="confFeeValue" step="0.50">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição Tempo (Ex: 30-40 min)</label>
+                            <input type="text" id="confFeeDesc">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:15px; border-top:1px dashed #eee; padding-top:15px;">
+                         <label style="color:#28a745; font-weight:bold;">Frete Grátis Acima de (R$)</label>
+                         <input type="number" id="confFreeShippingMin" placeholder="0 para desativar" step="1.00">
+                         <small style="color:#777;">Deixe 0 para nunca dar frete grátis automático.</small>
+                    </div>
+
+                    <div id="feeNeighGroup" style="display:none; margin-top:15px;">
+                        <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:10px;">
+                            <div style="flex:2">
+                                <label>Nome do Bairro</label>
+                                <input type="text" id="newNeighName" placeholder="Ex: Centro">
+                            </div>
+                            <div style="flex:1">
+                                <label>Valor (R$)</label>
+                                <input type="number" id="newNeighPrice" placeholder="5.00">
+                            </div>
+                            <button onclick="addNeighborhood()" class="add-new-btn" style="height:42px;">+</button>
+                        </div>
+                        <div id="neighborhoodList" style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;"></div>
+                    </div>
+                </div>
+
+                <div style="background:white; padding:20px; border-radius:12px; margin-bottom:20px;">
+                    <h3>Barra de Promoção (Topo do Site)</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                         <div class="form-group">
+                             <label>Ativar Barra?</label>
+                             <select id="confPromoEnabled">
+                                 <option value="true">Sim, mostrar</option>
+                                 <option value="false">Não, esconder</option>
+                             </select>
+                         </div>
+                         <div class="form-group">
+                            <label>Mostrar Botão?</label>
+                            <select id="confPromoBtnEnabled">
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Texto da Promoção</label>
+                        <input type="text" id="confPromoText" placeholder="Ex: Frete Grátis acima de R$50">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Link do Botão (Ir para Categoria)</label>
+                        <select id="confPromoLink">
+                            </select>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                        <label style="font-size:0.85rem; font-weight:600; margin-bottom:5px; display:block;">Ícone</label>
+                        <div style="display:flex; gap:15px;">
+                            <label><input type="radio" name="promoIconGroup" value="moped" checked> 🛵 Moto</label>
+                            <label><input type="radio" name="promoIconGroup" value="local_offer"> 🏷️ Oferta</label>
+                            <label><input type="radio" name="promoIconGroup" value="star"> ⭐ Estrela</label>
+                            <label><input type="radio" name="promoIconGroup" value="schedule"> 🕒 Relógio</label>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:15px;">
+                         <div class="form-group">
+                             <label>Cor de Fundo</label>
+                             <input type="color" id="confPromoColor" value="#ff0000" style="width:100%; height:40px;">
+                         </div>
+                         <div class="form-group">
+                            <label>Cor do Texto</label>
+                            <input type="color" id="confPromoTextColor" value="#ffffff" style="width:100%; height:40px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor do Ícone</label>
+                            <input type="color" id="confPromoIconColor" value="#ffffff" style="width:100%; height:40px;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background:white; padding:20px; border-radius:12px; margin-bottom:20px;">
+                    <h3>Mensagens Automáticas (WhatsApp)</h3>
+                    <p style="font-size:0.8rem; color:#777; margin-bottom:10px;">Use: {nome}, {id}, {total}, {resumo}, {link_status}</p>
+                    
+                    <div class="form-group">
+                        <label>Ao Receber Pedido</label>
+                        <textarea id="autoMsgReceived" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ao Mudar para "Preparando"</label>
+                        <textarea id="autoMsgPreparing" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ao Mudar para "Saiu p/ Entrega"</label>
+                        <textarea id="autoMsgDelivery" rows="2"></textarea>
+                    </div>
+                    <button onclick="saveAutomations()" style="background:#128C7E; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">Salvar Mensagens</button>
+                </div>
+
+
+             <div style="background: #f0f7ff; border: 2px solid #cce3ff; border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 25px;">
+                 <div style="margin-bottom: 15px;">
+                     <i class="material-icons" style="font-size: 48px; color: #007bff;">smart_toy</i>
+                 </div>
+                 <h3 style="color: #0056b3; margin-bottom: 10px; font-weight: 800;">Atendimento Inteligente via WhatsApp</h3>
+                 <p style="color: #444; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+                     Conecte o WhatsApp oficial do seu delivery para ativar a Inteligência Artificial. 
+                     O robô responderá automaticamente dúvidas sobre o <b>cardápio, horários, retirada de itens</b> e o <b>status dos pedidos</b> em tempo real.
+                 </p>
+    
+                 <button id="btnConnectWhatsapp" type="button" style="background: #007bff; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                     <i class="material-icons">sync</i> CONECTAR WHATSAPP COM IA
+                 </button>
+
+                 <div id="qrCodeArea" style="display: none; margin-top: 25px; background: white; padding: 20px; border-radius: 10px; border: 1px solid #ddd; display: inline-block;">
+                     <p style="font-weight: bold; margin-bottom: 15px; color: #333;">Escaneie para conectar:</p>
+                     <img id="qrCodeImage" src="" alt="QR Code" style="width: 200px; height: 200px;">
+                     <div id="connectionStatus" style="margin-top: 10px; color: #f39c12; font-size: 0.85rem; font-weight: bold;">
+                         Aguardando leitura...
+                     </div>
+                 </div>
+             </div>
+
+                <button onclick="saveSettings()" style="width:100%; padding:20px; background:var(--success-green); color:white; border:none; border-radius:8px; font-weight:800; cursor:pointer; font-size:1.1rem; margin-bottom:50px;">
+                    SALVAR TUDO
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="printArea"></div>
+
+    <div class="modal-overlay" id="adminProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Gerenciar Produto</h3>
+                <button onclick="closeAdminModal()" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nome do Produto</label>
+                <input type="text" id="newProdName">
+            </div>
+            
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="newProdDesc" rows="2"></textarea>
+            </div>
+            
+            <div style="display:flex; gap:10px;">
+                <div class="form-group" style="flex:1;">
+                    <label>Preço (R$)</label>
+                    <input type="number" id="newProdPrice" step="0.10">
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Preço Original (De/Por)</label>
+                    <input type="number" id="newProdOriginalPrice" step="0.10" placeholder="Opcional">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <select id="newProdCat"></select>
+            </div>
+
+            <div class="form-group" style="border:1px solid #eee; padding:10px; border-radius:8px;">
+                <label>Imagem do Produto</label>
+                
+                <div style="margin-bottom:10px;">
+                    <span style="font-size:0.8rem; font-weight:bold;">Opção A:</span> Upload do seu PC
+                    <input type="file" id="newProdFile" accept="image/*" style="margin-top:5px;">
+                </div>
+
+                <div style="text-align:center; font-size:0.8rem; color:#999; margin:5px 0;">OU</div>
+
+                <div>
+                    <span style="font-size:0.8rem; font-weight:bold;">Opção B:</span> Escolha da Galeria
+                    <div id="systemGalleryGrid" class="gallery-grid">
+                        </div>
+                    <input type="hidden" id="selectedGalleryUrl">
+                    <button onclick="clearGallerySelection()" style="font-size:0.7rem; margin-top:5px; background:none; border:none; color:red; cursor:pointer; text-decoration:underline;">Limpar Seleção da Galeria</button>
+                </div>
+            </div>
+
+            <div class="form-group" style="border-top:1px solid #eee; padding-top:10px;">
+                <label>Adicionais / Complementos</label>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <input type="text" id="newCompName" placeholder="Ex: Bacon Extra" style="flex:2;">
+                    <input type="number" id="newCompPrice" placeholder="R$" style="flex:1;">
+                    <button onclick="addTempComplement()" style="background:#333; color:white; border:none; border-radius:4px; padding:0 10px; cursor:pointer;">+</button>
+                </div>
+                <div id="complementsContainer" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+            </div>
+
+            <button class="confirm-order-btn" onclick="saveNewProduct()">Salvar Produto</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="driverModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Equipe de Entregas</h3>
+                <button onclick="document.getElementById('driverModal').classList.remove('active')" class="close-btn">&times;</button>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="newDriverName" placeholder="Nome do Motoboy" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                <button onclick="addDriver()" class="add-new-btn">Adicionar</button>
+            </div>
+            <div id="driversList" style="max-height:300px; overflow-y:auto; border:1px solid #eee; border-radius:8px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="driverReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="reportDriverName">Extrato</h3>
+                <button onclick="document.getElementById('driverReportModal').classList.remove('active')" class="close-btn">&times;</button>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead style="background: #f8f9fa; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 8px; text-align: left;">Pedido</th>
+                            <th style="padding: 8px; text-align: left;">Bairro</th>
+                            <th style="padding: 8px; text-align: right;">Total Pedido</th>
+                            <th style="padding: 8px; text-align: right;">Taxa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.9rem;">Qtd. Entregas: <strong id="reportCount">0</strong></span>
+                <div style="text-align: right;">
+                    <span style="display: block; font-size: 0.8rem; color: #777;">Total Taxas:</span>
+                    <span id="reportTotalFees" style="font-size: 1.4rem; font-weight: 800; color: #28a745;">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <script src="utils.js"></script>
+<script src="core.js"></script>
+<script src="store-client.js"></script>
+<script src="admin-painel.js"></script>
+<script src="admin-kanban.js"></script>
+<script src="checkout.js"></script>
+<script src="status.js"></script>
+
+</body>
+</html>

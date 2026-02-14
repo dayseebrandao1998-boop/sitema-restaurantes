@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pedido - Barriga Happy</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body id="checkoutPage">
+
+   
+
+
+
+
+        <div class="checkout-container">
+    <div class="checkout-header">
+        <button class="back-btn" onclick="const s = new URLSearchParams(window.location.search).get('loja'); window.location.href='loja.html?loja=' + s">
+    <i class="material-icons">arrow_back</i>
+</button>
+        <h2>Finalizar Pedido</h2>
+    </div>
+
+    <div class="checkout-section">
+        <h3 class="section-title"><i class="material-icons">receipt</i> Resumo</h3>
+        <div id="checkoutItems"></div>
+    </div>
+
+
+
+
+
+        <div class="checkout-section">
+        <h3 class="section-title"><i class="material-icons">location_on</i> Entrega</h3>
+        
+        <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Seu Nome Completo *</label>
+        <input type="text" id="customerName" placeholder="Nome completo por favor" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
+
+        <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Telefone / WhatsApp *</label>
+        <input type="tel" id="customerPhone" maxlength="15" onkeyup="handlePhoneMask(event)" placeholder="(27) 9 9999-9999" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+        <small style="display:block; color:#28a745; font-size:0.75rem; margin-top:3px; margin-bottom:15px;">
+            <i class="material-icons" style="font-size:0.7rem; vertical-align:middle;">check_circle</i> 
+            Nesse número você receberá status do pedido no WhatsApp em tempo real
+        </small>
+
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">CEP *</label>
+                <input type="tel" id="customerZip" maxlength="9" placeholder="00000-000" onblur="buscaCep(this.value)" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div style="flex:1; padding-top:35px;">
+                <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" style="font-size:0.75rem; color:#007bff; text-decoration:underline;">Não sei meu CEP</a>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="flex:2;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Rua / Avenida *</label>
+                <input type="text" id="customerStreet" placeholder="Carregando..." style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+            </div>
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Número *</label>
+                <input type="text" id="customerNumber" placeholder="123" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Complemento</label>
+                <input type="text" id="customerComp" placeholder="Apto 101, Fundos" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Bairro *</label>
+                <input type="text" id="customerNeighborhood" placeholder="Bairro" onblur="calculateShipping()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <div style="flex:2;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">Cidade *</label>
+                <input type="text" id="customerCity" placeholder="Cidade" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+            </div>
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; color:#555;">UF *</label>
+                <input type="text" id="customerState" placeholder="ES" maxlength="2" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; text-transform:uppercase; background:#f9f9f9;">
+            </div>
+        </div>
+
+        <input type="hidden" id="customerAddress"> 
+        <input type="hidden" id="customerAddressOnly"> 
+    </div>
+
+
+
+
+
+
+
+    <div class="checkout-section">
+        <h3 class="section-title"><i class="material-icons">payments</i> Pagamento</h3>
+        <input type="hidden" id="selectedPayment" value="">
+        <div class="payment-options">
+            <div class="payment-option" data-value="Pix">Pix</div>
+            <div class="payment-option" data-value="Dinheiro">Dinheiro</div>
+            <div class="payment-option" data-value="Cartão">Cartão</div>
+        </div>
+    </div>
+
+    <div class="checkout-section" style="margin-bottom: 80px;">
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="subtotalVal">R$ 0,00</span>
+        </div>
+        <div class="summary-row">
+            <span>Entrega</span>
+            <span>A Consultar</span>
+        </div>
+        <div class="summary-row total">
+            <span>Total</span>
+            <span id="checkoutTotal">R$ 0,00</span>
+        </div>
+        
+        <button class="confirm-order-btn" onclick="finishOrder()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.004 2C6.48 2 2 6.48 2 12.004C2 13.77 2.46 15.43 3.28 16.89L2.05 21.4L6.71 20.17C8.1 20.93 9.7 21.36 11.39 21.36H12.01C17.53 21.36 22.01 16.88 22.01 11.36C22.01 5.84 17.53 1.36 12.01 1.36L12.004 2ZM12.01 19.67C10.51 19.67 9.15 19.26 8 18.52L7.69 18.33L4.85 19.08L5.61 16.31L5.4 15.98C4.55 14.63 4.1 13.06 4.1 11.36C4.1 7 7.65 3.45 12.01 3.45C16.37 3.45 19.92 7 19.92 11.36C19.92 15.72 16.37 19.27 12.01 19.27V19.67Z"/>
+                <path d="M16.91 14.28C16.67 14.16 15.51 13.59 15.29 13.48C15.07 13.37 14.91 13.31 14.75 13.55C14.59 13.79 14.13 14.33 13.99 14.49C13.85 14.65 13.71 14.67 13.47 14.55C13.23 14.43 12.45 14.17 11.53 13.35C10.82 12.72 10.34 11.94 10.1 11.53C9.86 11.12 10.07 11.08 10.19 10.96C10.29 10.86 10.41 10.71 10.53 10.57C10.65 10.43 10.69 10.33 10.77 10.17C10.85 10.01 10.81 9.87 10.75 9.75C10.69 9.63 10.21 8.45 10.01 7.97C9.81 7.5 9.61 7.56 9.47 7.56H9.08C8.94 7.56 8.72 7.61 8.53 7.82C8.34 8.03 7.8 8.54 7.8 9.58C7.8 10.62 8.56 11.63 8.67 11.78C8.78 11.93 10.2 14.12 12.38 15.06C13.99 15.75 14.63 15.65 15.22 15.57C15.87 15.48 17.22 14.76 17.5 13.97C17.78 13.18 17.78 12.5 17.7 12.37C17.62 12.24 17.41 12.16 17.17 12.04L16.91 14.28Z"/>
+            </svg>
+            <span>ENVIAR PEDIDO</span>
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+  
+<script src="utils.js"></script>
+<script src="core.js"></script>
+<script src="store-client.js"></script>
+<script src="admin-panel.js"></script>
+<script src="admin-kanban.js"></script>
+<script src="checkout.js"></script>
+<script src="status.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barriga Happy</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="index.css">
+    
+</head>
+<body>
+    <div class="promo-bar" id="promoBar">
+        <div class="promo-content">
+            <i class="material-icons">moped</i>
+            <span>Frete Grátis acima de R$50</span>
+        </div>
+        <button class="promo-btn">Ver</button>
+    </div>
+
+    <header class="hero">
+        <div class="banner-img"></div>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="https://via.placeholder.com/100" alt="Logo" class="logo">
+            </div>
+
+            <div class="store-info">
+                <div class="store-header-row">
+                    <h1>Barriga Happy</h1>
+                    <div class="store-status"><span class="status-badge open">Aberto</span></div>
+                </div>
+                
+                <div class="store-meta">
+                    <i class="material-icons" style="font-size: 1rem; color: #777;">location_on</i>
+                    <span>1,6km de você • Entrega Grátis</span>
+                </div>
+
+                <div class="store-rating">
+                    <i class="material-icons" style="font-size: 1rem; color: #FFD700;">star</i>
+                    <span>4,9/5 (1392 avaliações)</span>
+                </div>
+            </div>
+
+            <div class="header-icons">
+                <div class="header-cart-icon" id="btnHistory" onclick="openOrderHistory()">
+                    <i class="material-icons" style="font-size: 1.8rem;">receipt_long</i>
+                </div>
+
+                <div class="header-cart-icon" id="btnCart" onclick="goToCheckout()">
+                    <i class="material-icons" style="font-size: 1.8rem;">shopping_cart</i>
+                    <div class="header-cart-count" id="headerCartCount" style="display:none">0</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <div class="search-box">
+            <i class="material-icons">search</i>
+            <input type="text" id="searchInput" placeholder="O que deseja comer hoje?">
+        </div>
+    </div>
+
+    <div id="featuredContainer" class="featured-section" style="display:none;">
+        <h2 class="featured-title"> Destaques</h2>
+        <div class="featured-carousel" id="featuredCarouselList">
+            </div>
+    </div>
+
+
+    <nav class="sticky-nav">
+        <ul id="categoryList">
+            </ul>
+    </nav>
+
+    <main id="menuContainer">
+        </main>
+
+    <div class="cart-float" id="cartFloat" onclick="goToCheckout()">
+        <div style="display:flex; align-items:center; gap:10px">
+            <i class="material-icons">shopping_bag</i>
+            <span id="cartCount">0</span>
+        </div>
+        <div style="font-weight:bold">Ver Carrinho</div>
+        <div id="cartTotalFloat">R$ 0,00</div>
+    </div>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:flex-end;">
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <img id="modalImg" src="" alt="Produto">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDesc"></p>
+            <div id="modalPrice"></div>
+            
+            <div class="options-section" style="margin:20px 0;">
+                <label style="font-size:0.9rem; font-weight:bold;">Observações</label>
+                <textarea id="modalObs" rows="3" placeholder="Ex: Sem cebola, capricha no molho..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <div class="qty-control">
+                    <button onclick="changeQty(-1)">-</button>
+                    <span id="modalQty">1</span>
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+                <button class="add-btn" onclick="confirmAdd()">
+                    <span>Adicionar</span>
+                    <span id="modalBtnPrice"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Meus Pedidos</h3>
+            <button onclick="closeOrderHistory()" class="close-btn">&times;</button>
+        </div>
+        <div id="orderHistoryList" style="margin-top: 10px; max-height: 400px; overflow-y: auto;">
+            </div>
+    </div>
+</div>
+
+<script src="utils.js"></script>
+<script src="core.js"></script>
+<script src="store-client.js"></script>
+<script src="admin-panel.js"></script>
+<script src="admin-kanban.js"></script>
+<script src="checkout.js"></script>
+<script src="status.js"></script>
+
+</body>
+</html>
