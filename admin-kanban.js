@@ -391,8 +391,9 @@ async function notifyOrderUpdate(orderId, status) {
         link_status: `${window.location.origin}/status.html?id=${order.id}&loja=${currentSlug}`
     };
 
-    try {
-        await fetch(n8nWebhookUrl, {
+   try {
+        // Remova apenas a palavra 'await' abaixo
+        fetch(n8nWebhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -435,4 +436,5 @@ function changeStatus(id, st) {
         // Dispara a IA para avisar que o pedido foi aceito ou está pronto
         notifyOrderUpdate(id, st);
     }
+
 }
